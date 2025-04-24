@@ -1,0 +1,6 @@
+<?xml version="1.0"?>
+<body>
+    <referenceContainer name="order.success.additional.info">
+        <block class="Sqala\Payment\Block\Order\Success\Additional" name="order.success.additional.info.sqala" after="-" />
+    </referenceContainer>
+</body>

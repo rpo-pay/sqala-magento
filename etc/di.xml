@@ -1,0 +1,189 @@
+<?xml version="1.0"?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:ObjectManager/etc/config.xsd">
+
+    <type name="Magento\Config\Model\Config\TypePool">
+        <arguments>
+            <argument name="sensitive" xsi:type="array">
+                <item name="payment/sqala_payment/app_id" xsi:type="string">0</item>
+                <item name="payment/sqala_payment/app_secret" xsi:type="string">1</item>
+                <item name="payment/sqala_payment/refresh_token" xsi:type="string">1</item>
+                <item name="payment/sqala_payment/webhook_secret_id" xsi:type="string">1</item>
+            </argument>
+        </arguments>
+    </type>
+
+    <type name="Sqala\Payment\Cron\SyncOrders">
+        <arguments>
+            <argument name="commandPool" xsi:type="object">SqalaPaymentPixCommandPool</argument>
+        </arguments>
+    </type>
+
+    <virtualType name="SqalaPaymentBaseFacade" type="Magento\Payment\Model\Method\Adapter">
+        <arguments>
+            <argument name="code" xsi:type="const">Sqala\Payment\Model\Ui\ConfigProviderBase::CODE</argument>
+            <argument name="formBlockType" xsi:type="string">Sqala\Payment\Block\Form\Hidden</argument>
+            <argument name="infoBlockType" xsi:type="string">Magento\Payment\Block\Info</argument>
+            <argument name="valueHandlerPool" xsi:type="object">SqalaPaymentPixValueHandlerPool</argument>
+            <argument name="commandPool" xsi:type="object">SqalaPaymentPixCommandPool</argument>
+        </arguments>
+    </virtualType>
+
+    <virtualType name="SqalaPaymentPixFacade" type="Magento\Payment\Model\Method\Adapter">
+        <arguments>
+            <argument name="code" xsi:type="const">Sqala\Payment\Model\Ui\ConfigProviderPix::CODE</argument>
+            <argument name="formBlockType" xsi:type="string">Sqala\Payment\Block\Form\Pix</argument>
+            <argument name="infoBlockType" xsi:type="string">Sqala\Payment\Block\Info\Pix</argument>
+            <argument name="valueHandlerPool" xsi:type="object">SqalaPaymentPixValueHandlerPool</argument>
+            <argument name="validatorPool" xsi:type="object">SqalaPaymentPixValidatorPool</argument>
+            <argument name="commandPool" xsi:type="object">SqalaPaymentPixCommandPool</argument>
+        </arguments>
+    </virtualType>
+
+    <virtualType name="SqalaPaymentPixValueHandlerPool" type="Magento\Payment\Gateway\Config\ValueHandlerPool">
+        <arguments>
+            <argument name="handlers" xsi:type="array">
+                <item name="default" xsi:type="string">SqalaPaymentPixConfigValueHandler</item>
+            </argument>
+        </arguments>
+    </virtualType>
+
+    <virtualType name="SqalaPaymentPixConfigValueHandler" type="Magento\Payment\Gateway\Config\ConfigValueHandler">
+        <arguments>
+            <argument name="configInterface" xsi:type="object">SqalaPaymentPixConfig</argument>
+        </arguments>
+    </virtualType>
+
+    <virtualType name="SqalaPaymentPixConfig" type="Magento\Payment\Gateway\Config\Config">
+        <arguments>
+            <argument name="methodCode" xsi:type="const">Sqala\Payment\Model\Ui\ConfigProviderPix::CODE</argument>
+        </arguments>
+    </virtualType>
+
+    <virtualType name="SqalaPaymentPixValidatorPool" type="Magento\Payment\Gateway\Validator\ValidatorPool">
+        <arguments>
+            <argument name="validators" xsi:type="array">
+                <item name="country" xsi:type="string">SqalaPaymentPixCountryValidator</item>
+            </argument>
+        </arguments>
+    </virtualType>
+
+    <virtualType name="SqalaPaymentPixCountryValidator" type="Magento\Payment\Gateway\Validator\CountryValidator">
+        <arguments>
+            <argument name="config" xsi:type="object">Sqala\Payment\Gateway\Config\ConfigPix</argument>
+        </arguments>
+    </virtualType>
+
+    <virtualType name="SqalaPaymentPixCommandPool" type="Magento\Payment\Gateway\Command\CommandPool">
+        <arguments>
+            <argument name="commands" xsi:type="array">
+                <item name="initialize" xsi:type="string">SqalaPaymentPixOrderCommand</item>
+                <item name="refund" xsi:type="string">SqalaPaymentRefundCommand</item>
+                <item name="fetch" xsi:type="string">SqalaPaymentPixFetchCommand</item>
+            </argument>
+        </arguments>
+    </virtualType>
+
+    <virtualType name="SqalaPaymentPixOrderCommand" type="Sqala\Payment\Gateway\Command\PaymentCommand">
+        <arguments>
+            <argument name="commandPool" xsi:type="object">SqalaPaymentPixCommandPool</argument>
+            <argument name="requestBuilder" xsi:type="object">SqalaPaymentPixOrderRequest</argument>
+            <argument name="handler" xsi:type="object">SqalaPaymentPixOrderResponseHandlerComposite</argument>
+            <argument name="transferFactory" xsi:type="object">Sqala\Payment\Gateway\Http\TransferFactory</argument>
+            <argument name="client" xsi:type="object">Sqala\Payment\Gateway\Http\Client\CreateOrderPaymentCustomClient</argument>
+            <argument name="validator" xsi:type="object">SqalaPaymentTransactionValidator</argument>
+        </arguments>
+    </virtualType>
+
+    <virtualType name="SqalaPaymentPixOrderRequest" type="Magento\Payment\Gateway\Request\BuilderComposite">
+        <arguments>
+            <argument name="builders" xsi:type="array">
+                <item name="code" xsi:type="string">Sqala\Payment\Gateway\Request\CodeDataRequest</item>
+                <item name="amount" xsi:type="string">Sqala\Payment\Gateway\Request\AmountDataRequest</item>
+                <item name="payer" xsi:type="string">Sqala\Payment\Gateway\Request\PayerDataRequest</item>
+            </argument>
+        </arguments>
+    </virtualType>
+
+    <virtualType name="SqalaPaymentPixOrderResponseHandlerComposite" type="Magento\Payment\Gateway\Response\HandlerChain">
+        <arguments>
+            <argument name="handlers" xsi:type="array">
+                <item name="payment_details" xsi:type="string">Sqala\Payment\Gateway\Response\PixResponseHandler</item>
+            </argument>
+        </arguments>
+    </virtualType>
+
+    <virtualType name="SqalaPaymentTransactionValidator" type="Magento\Payment\Gateway\Validator\ValidatorComposite">
+        <arguments>
+            <argument name="chainBreakingValidators" xsi:type="array">
+                <item name="general" xsi:type="boolean">true</item>
+            </argument>
+            <argument name="validators" xsi:type="array">
+                <item name="general" xsi:type="string">Sqala\Payment\Gateway\Validator\GeneralResponseValidator</item>
+            </argument>
+        </arguments>
+    </virtualType>
+
+    <virtualType name="RefundTransactionValidator" type="Magento\Payment\Gateway\Validator\ValidatorComposite">
+        <arguments>
+            <argument name="chainBreakingValidators" xsi:type="array">
+                <item name="general" xsi:type="boolean">true</item>
+            </argument>
+            <argument name="validators" xsi:type="array">
+                <item name="general" xsi:type="string">Sqala\Payment\Gateway\Validator\RefundResponseValidator</item>
+            </argument>
+        </arguments>
+    </virtualType>
+
+    <virtualType name="SqalaPaymentPixFetchCommand" type="Sqala\Payment\Gateway\Command\PaymentCommand">
+        <arguments>
+            <argument name="commandPool" xsi:type="object">SqalaPaymentPixCommandPool</argument>
+            <argument name="requestBuilder" xsi:type="object">SqalaPaymentBaseFetchRequest</argument>
+            <argument name="handler" xsi:type="object">SqalaPaymentFetchResponseHandlerComposite</argument>
+            <argument name="transferFactory" xsi:type="object">Sqala\Payment\Gateway\Http\TransferFactory</argument>
+            <argument name="client" xsi:type="object">Sqala\Payment\Gateway\Http\Client\FetchPaymentClient</argument>
+            <argument name="validator" xsi:type="object">SqalaPaymentTransactionValidator</argument>
+        </arguments>
+    </virtualType>
+
+    <virtualType name="SqalaPaymentRefundCommand" type="Magento\Payment\Gateway\Command\GatewayCommand">
+        <arguments>
+            <argument name="requestBuilder" xsi:type="object">SqalaPaymentRefundRequest</argument>
+            <argument name="transferFactory" xsi:type="object">Sqala\Payment\Gateway\Http\TransferFactory</argument>
+            <argument name="client" xsi:type="object">Sqala\Payment\Gateway\Http\Client\RefundClient</argument>
+            <argument name="handler" xsi:type="object">SqalaPaymentRefundResponseHandlerComposite</argument>
+            <argument name="validator" xsi:type="object">RefundTransactionValidator</argument>
+        </arguments>
+    </virtualType>
+
+    <virtualType name="SqalaPaymentRefundRequest" type="Magento\Payment\Gateway\Request\BuilderComposite">
+        <arguments>
+            <argument name="builders" xsi:type="array">
+                <item name="id" xsi:type="string">Sqala\Payment\Gateway\Request\SqalaIdDataRequest</item>
+            </argument>
+        </arguments>
+    </virtualType>
+
+    <virtualType name="SqalaPaymentRefundResponseHandlerComposite" type="Magento\Payment\Gateway\Response\HandlerChain">
+        <arguments>
+            <argument name="handlers" xsi:type="array">
+                <item name="refund" xsi:type="string">Sqala\Payment\Gateway\Response\PixRefundHandler</item>
+            </argument>
+        </arguments>
+    </virtualType>
+
+    <virtualType name="SqalaPaymentBaseFetchRequest" type="Magento\Payment\Gateway\Request\BuilderComposite">
+        <arguments>
+            <argument name="builders" xsi:type="array">
+                <item name="id" xsi:type="string">Sqala\Payment\Gateway\Request\SqalaIdDataRequest</item>
+            </argument>
+        </arguments>
+    </virtualType>
+
+    <virtualType name="SqalaPaymentFetchResponseHandlerComposite" type="Magento\Payment\Gateway\Response\HandlerChain">
+        <arguments>
+            <argument name="handlers" xsi:type="array">
+                <item name="fetch" xsi:type="string">Sqala\Payment\Gateway\Response\FetchPaymentHandler</item>
+            </argument>
+        </arguments>
+    </virtualType>
+</config>

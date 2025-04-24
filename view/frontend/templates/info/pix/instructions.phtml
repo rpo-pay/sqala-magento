@@ -1,0 +1,65 @@
+<?php
+/**
+ * @var \Magento\Framework\Escaper $escaper
+ * @var \Sqala\Payment\Block\Info\Pix $block
+ */
+$title = $escaper->escapeHtml(__($block->getMethod()->getTitle()));
+$qrCode = $block->getQrCode();
+$expirationDate = $block->getExpiresAt();
+$sqalaTransactionId = $block->getSqalaId();
+?>
+<dl class="payment-method">
+    <dt class="title"><?= /* @noEscape */ $title ?></dt>
+    <dd class="content">
+        <dl>
+            <?php if ($expirationDate) : ?>
+                <dt><?= $escaper->escapeHtml(__('Expiration')); ?></dt>
+                <dd>
+                    <?= /* @noEscape */ $block->date($expirationDate)?>
+                </dd>
+            <?php endif; ?>
+            <?php if ($sqalaTransactionId) : ?>
+                <dt><?= $escaper->escapeHtml(__('Transaction ID (Sqala)')); ?></dt>
+                <dd>
+                    <?= $escaper->escapeHtml($sqalaTransactionId) ?>
+                </dd>
+            <?php endif; ?>
+            <?php if ($qrCode) : ?>
+                <dt><?= $escaper->escapeHtml(__('Pix QR Code')); ?></dt>
+                <dd><div id="qrcode"></div></dd>
+                <dt><?= $escaper->escapeHtml(__('Pix Code')); ?></dt>
+                <dd>
+                    <textarea id="qr-code-value" rows="10" cols="30" readonly><?= $escaper->escapeHtml($qrCode) ?></textarea>
+                    <button id="copy-pix-code" class="action submit primary"><?=$escaper->escapeHtml(__('Copy'));?></button>
+                </dd>
+            <?php endif;?>
+        </dl>        
+    </dd>
+</dl>
+
+<script type="text/javascript">
+    require([
+        'Sqala_Payment/js/qrcode.min',
+        'jquery'
+    ], function (_, $) {
+        var QR_CODE = new QRCode("qrcode", {
+            width: 220,
+            height: 220,
+            colorDark: "#000000",
+            colorLight: "#ffffff",
+            correctLevel : QRCode.CorrectLevel.L,
+        });
+        QR_CODE.makeCode('<?= $escaper->escapeJs($qrCode) ?>');
+
+        $('#copy-pix-code').on('click', function () {
+            var $textarea = $('#qr-code-value');
+            $textarea.select();
+            document.execCommand('copy');
+
+            $(this).text('<?= $escaper->escapeJs(__('Copied!')) ?>');
+            setTimeout(() => {
+                $('#copy-pix-code').text('<?= $escaper->escapeJs(__('Copy')) ?>');
+            }, 1500);
+        });
+    })
+</script>

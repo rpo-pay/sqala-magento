@@ -1,0 +1,40 @@
+<?xml version="1.0"?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Backend:etc/system_file.xsd">
+    <system>
+        <section id="payment">
+            <group id="sqala_payment" translate="label" type="text" sortOrder="100" showInDefault="1" showInWebsite="1" showInStore="1">
+                <label>Sqala Payment</label>
+                <field id="app_id" translate="label" type="text" sortOrder="1" showInDefault="1" showInWebsite="1" showInStore="1" canRestore="0">
+                    <label>AppID</label>
+                    <config_path>payment/sqala_payment/app_id</config_path>
+                    <validate>required-entry</validate>
+                </field>
+                <field id="app_secret" translate="label" type="text" sortOrder="1" showInDefault="1" showInWebsite="1" showInStore="1" canRestore="0">
+                    <label>AppSecret</label>
+                    <config_path>payment/sqala_payment/app_secret</config_path>
+                    <validate>required-entry</validate>
+                </field>
+                <field id="refresh_token" translate="label" type="text" sortOrder="1" showInDefault="1" showInWebsite="1" showInStore="1" canRestore="0">
+                    <label>Refresh Token</label>
+                    <config_path>payment/sqala_payment/refresh_token</config_path>
+                    <validate>required-entry</validate>
+                </field>
+                <field id="webhook_secret_id" translate="label" type="text" sortOrder="1" showInDefault="1" showInWebsite="1" showInStore="1" canRestore="0">
+                    <label>Webhook - Secret Id</label>
+                    <config_path>payment/sqala_payment/webhook_secret_id</config_path>
+                    <validate>required-entry</validate>
+                </field>
+                <field id="active_pix" translate="label" type="select" sortOrder="1" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Enable Pix</label>
+                    <config_path>payment/sqala_pix/enable_pix</config_path>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                </field>
+                <field id="active_creditcard" translate="label" type="select" sortOrder="2" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Enable Credit Card</label>
+                    <config_path>payment/sqala_payment/enable_creditcard</config_path>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                </field>
+            </group>
+        </section>
+    </system>
+</config>

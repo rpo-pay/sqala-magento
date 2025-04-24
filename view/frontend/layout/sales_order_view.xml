@@ -1,0 +1,7 @@
+<?xml version="1.0"?>
+<referenceBlock name="order.info.payment.additional">
+    <block class="Sqala\Payment\Block\Info\Pix"
+           name="sqala.pix.info"
+           template="Sqala_Payment::info/pix/instructions.phtml"
+           before="-"/>
+</referenceBlock>

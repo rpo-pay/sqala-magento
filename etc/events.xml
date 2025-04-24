@@ -1,0 +1,6 @@
+<?xml version="1.0"?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:Event/etc/events.xsd">
+    <event name="payment_method_assign_data_sqala_pix">
+        <observer name="sqala_pix_data_assign" instance="Sqala\Payment\Observer\DataAssignCheckoutCustomObserver" />
+    </event>
+</config>

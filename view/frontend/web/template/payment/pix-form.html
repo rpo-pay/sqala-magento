@@ -1,0 +1,47 @@
+<fieldset data-bind="attr: {class: 'fieldset payment items', id: 'payment_form_payer_persona' + getCode()}">
+    <div class="field type-document">
+        <label for="document_type" class="label">
+            <span><!-- ko i18n: 'Document Type' --><!-- /ko --></span>
+        </label>
+        <div class="control">
+            <select id="document_type" name="payment[payer_document_type]" data-bind="
+            attr: {
+                autocomplete: 'off',
+                id: getCode() + '_payer_document_type',
+                'data-container': getCode() + '-payer-document-type',
+                'data-validate': JSON.stringify({required:true})
+            },
+            enable: isActive($parents),
+            options: payerOptionsTypes(),
+            optionsValue: 'id',
+            optionsText: 'name',
+            value: payerType">
+                <option value="cpf">CPF</option>
+                <option value="cnpj">CNPJ</option>
+            </select>
+        </div>
+    </div>
+    <div class="field document-number required">
+        <label for="document_number" class="label">
+            <span><!-- ko i18n: 'Document number'--><!-- /ko --></span>
+        </label>
+        <div class="control">
+            <input type="text"
+                   id="document_number"
+                   name="payment[payer_document_identification]"
+                   class="input-text"
+                   data-bind="attr: {
+                    autocomplete: 'taxvat',
+                    id: getCode() + '_document_identification',
+                    title: $t('Document number'),
+                    placeholder: $t('Document number'),
+                    'data-container': getCode() + '-document-identification',
+                    'data-validate': JSON.stringify(getValidationForDocument())
+                },
+                enable: isActive($parents),
+                value: payerDocument,
+                valueUpdate: 'keyup' "
+                />
+        </div>
+    </div>
+</fieldset>

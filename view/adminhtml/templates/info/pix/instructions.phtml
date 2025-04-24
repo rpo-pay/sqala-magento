@@ -1,0 +1,35 @@
+<?php
+/**
+ * @var \Magento\Framework\Escaper $escaper
+ * @var \Sqala\Payment\Block\Info\Pix $block
+ */
+$title = $escaper->escapeHtml(__($block->getMethod()->getTitle()));
+$qrCode = $block->getQrCode();
+$expirationDate = $block->getExpiresAt();
+$sqalaTransactionId = $block->getSqalaId();
+?>
+<table class="admin__table-secondary order-information-table">
+    <tbody>
+        <?php if ($expirationDate) : ?>
+            <tr>
+                <th><?= $escaper->escapeHtml(__('Expiration')); ?></th>
+                <td><?= /* @noEscape */ $block->date($expirationDate)?></td>
+            </tr>
+        <?php endif; ?>
+        <?php if ($sqalaTransactionId) : ?>
+            <tr>
+                <th><?= $escaper->escapeHtml(__('Transaction ID (Sqala)')); ?></th>
+                <td><?= $escaper->escapeHtml($sqalaTransactionId) ?></td>
+            </tr>
+        <?php endif; ?>
+        <?php if ($qrCode) : ?>
+            <tr>
+                <th><?= $escaper->escapeHtml(__('Pix Code')); ?></th>
+                <td>
+                    <textarea id="qr-code-value" rows="10" cols="30" readonly><?= $escaper->escapeHtml($qrCode) ?></textarea><br>
+                    <button id="copy-pix-code" class="action submit primary"><?=$escaper->escapeHtml(__('Copy'));?></button>
+                </td>
+            </tr>
+        <?php endif;?>
+    </tbody>
+</table>
