@@ -44,7 +44,9 @@ bin/magento setup:static-content:deploy -f
 ✅ Troubleshooting Tip: If you face permission issues during installation, make sure the following directories have the correct write permissions:
 
 var/
+
 pub/
+
 generated/
 
 
