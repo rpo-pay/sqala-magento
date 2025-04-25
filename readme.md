@@ -69,7 +69,7 @@ Look for the section Sqala Payment and fill in your credentials:
 
 Enable the desired payment method and save the configuration.
 
-# 🔔 Webhook Setup
+## 🔔 Webhook Setup
 To ensure payment updates are processed correctly, set up the following webhook in your Sqala dashboard:
 
 Event: Payment Paid
