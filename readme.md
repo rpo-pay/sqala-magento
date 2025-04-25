@@ -14,7 +14,7 @@ You can install the plugin using Composer or manually, depending on your project
 
 ### Option 1: Manual Installation
 
-1. Download the Sqala folder and extract it into the following directory:
+1. Download the sqala-magento.zip from github and extract it into the following directory:
 
 ```bash
 curl -L  https://github.com/rpo-pay/sqala-magento/archive/refs/tags/1.0.0.zip > sqala-magento.zip
